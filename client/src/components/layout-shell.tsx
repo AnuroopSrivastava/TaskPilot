@@ -36,9 +36,9 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-sidebar border-r border-sidebar-border">
-      <div className="p-6">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+      <div className="p-6 border-b border-sidebar-border">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-9 w-9 rounded-lg bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
             <svg
               className="w-5 h-5 text-primary-foreground"
               fill="none"
@@ -49,12 +49,15 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={2.5}
                 d="M13 10V3L4 14h7v7l9-11h-7z"
               />
             </svg>
           </div>
-          <span className="font-heading font-bold text-xl tracking-tight">TaskFlow</span>
+          <div>
+            <span className="font-heading font-bold text-lg tracking-tight text-foreground">TaskFlow</span>
+            <p className="text-xs text-muted-foreground">Pro</p>
+          </div>
         </div>
 
         <nav className="space-y-1">
@@ -64,10 +67,10 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
               <Link key={item.name} href={item.href}>
                 <a
                   data-testid={`nav-${item.name.toLowerCase()}`}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-foreground"
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
+                      : "text-sidebar-foreground hover:bg-sidebar-accent/70 hover:text-sidebar-foreground"
                   }`}
                   onClick={() => setIsMobileOpen(false)}
                 >
@@ -81,16 +84,21 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="mt-auto p-4 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 p-2 rounded-md hover:bg-sidebar-accent/50 transition-colors">
-          <Avatar className="h-8 w-8">
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-sidebar-accent/50 hover:bg-sidebar-accent transition-colors group">
+          <Avatar className="h-9 w-9 ring-2 ring-sidebar-border">
             <AvatarImage src={user?.avatar} />
-            <AvatarFallback>{user?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+            <AvatarFallback className="text-sm font-semibold">{user?.name.slice(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{user?.name}</p>
+            <p className="text-sm font-semibold truncate text-sidebar-foreground">{user?.name}</p>
             <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
           </div>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={logout}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-destructive" 
+            onClick={logout}
+          >
             <LogOut className="w-4 h-4" />
           </Button>
         </div>
@@ -109,8 +117,8 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <header className="h-16 border-b border-border bg-background/80 backdrop-blur-xl sticky top-0 z-10 px-6 flex items-center justify-between">
+          <div className="flex items-center gap-4 flex-1">
             <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="md:hidden">
@@ -122,20 +130,20 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
               </SheetContent>
             </Sheet>
             
-            <div className="relative w-64 hidden sm:block">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <div className="relative w-80 hidden sm:block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search tasks..."
-                className="pl-9 bg-muted/50 border-transparent focus:bg-background focus:border-input transition-colors"
+                className="pl-10 bg-muted/40 border border-border/50 focus:border-primary/50 focus:bg-background transition-all placeholder:text-muted-foreground"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute top-2 right-2 h-2 w-2 bg-primary rounded-full ring-2 ring-background" />
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon" className="relative text-muted-foreground hover:text-foreground">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-primary rounded-full ring-2 ring-background animate-pulse" />
             </Button>
           </div>
         </header>

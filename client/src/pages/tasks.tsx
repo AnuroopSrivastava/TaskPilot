@@ -2,7 +2,7 @@ import { LayoutShell } from "@/components/layout-shell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,7 +30,6 @@ type Task = {
   dueDate: Date;
 };
 
-// Mock data
 const initialTasks: Task[] = [
   {
     id: "1",
@@ -66,7 +65,6 @@ export default function TasksPage() {
   const [date, setDate] = useState<Date>();
   const { toast } = useToast();
 
-  // Form State
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newPriority, setNewPriority] = useState<string>("medium");
@@ -100,7 +98,6 @@ export default function TasksPage() {
     setTasks([newTask, ...tasks]);
     setIsCreateOpen(false);
     
-    // Reset form
     setNewTitle("");
     setNewDescription("");
     setNewPriority("medium");
@@ -122,16 +119,16 @@ export default function TasksPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "done": return "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/25";
-      case "in-progress": return "bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25";
-      default: return "bg-slate-500/15 text-slate-700 dark:text-slate-400 hover:bg-slate-500/25";
+      case "done": return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400";
+      case "in-progress": return "bg-blue-500/20 text-blue-700 dark:text-blue-400";
+      default: return "bg-slate-500/20 text-slate-700 dark:text-slate-400";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "text-red-500";
-      case "medium": return "text-amber-500";
+      case "high": return "text-red-600 dark:text-red-400";
+      case "medium": return "text-amber-600 dark:text-amber-400";
       default: return "text-slate-500";
     }
   };
@@ -141,12 +138,12 @@ export default function TasksPage() {
       <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-3xl font-heading font-bold tracking-tight text-foreground">Tasks</h2>
-            <p className="text-muted-foreground mt-1">Manage and track your team's progress.</p>
+            <h2 className="text-heading-lg text-foreground">Tasks</h2>
+            <p className="text-body mt-2">Manage and track your team's progress.</p>
           </div>
           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
-              <Button size="lg" className="shadow-lg shadow-primary/20">
+              <Button size="lg" className="shadow-lg shadow-primary/20 font-semibold">
                 <Plus className="mr-2 h-4 w-4" /> Create Task
               </Button>
             </DialogTrigger>
@@ -165,6 +162,7 @@ export default function TasksPage() {
                     placeholder="Task title" 
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
+                    className="border-border/60"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -174,13 +172,14 @@ export default function TasksPage() {
                     placeholder="Task description" 
                     value={newDescription}
                     onChange={(e) => setNewDescription(e.target.value)}
+                    className="border-border/60"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
                     <Label>Priority</Label>
                     <Select value={newPriority} onValueChange={setNewPriority}>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-border/60">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent>
@@ -216,27 +215,27 @@ export default function TasksPage() {
               </div>
               <DialogFooter>
                 <Button variant="outline" onClick={() => setIsCreateOpen(false)}>Cancel</Button>
-                <Button onClick={handleCreateTask}>Create Task</Button>
+                <Button onClick={handleCreateTask} className="font-semibold">Create Task</Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center bg-card p-4 rounded-xl border shadow-sm">
+        <div className="flex flex-col sm:flex-row gap-4 items-center bg-card border border-border p-4 rounded-lg shadow-sm">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search tasks..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-muted/30 border-transparent focus:bg-background focus:border-input transition-colors"
+              className="pl-10 bg-muted/40 border-border/50 focus:border-primary/50 transition-all"
             />
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] border-border/50">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -250,16 +249,16 @@ export default function TasksPage() {
         </div>
 
         {/* Tasks Grid */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {filteredTasks.map((task) => (
-            <Card key={task.id} className="hover-elevate transition-all group cursor-pointer border-transparent shadow-sm hover:shadow-md bg-card/50 backdrop-blur-sm">
-              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
-                <Badge variant="secondary" className={`font-normal ${getStatusColor(task.status)}`}>
-                  {task.status.replace("-", " ")}
+            <Card key={task.id} className="card-professional overflow-hidden group hover:shadow-lg transition-all hover:border-primary/30">
+              <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-3 bg-gradient-to-r from-transparent to-primary/5">
+                <Badge variant="secondary" className={`font-medium text-xs ${getStatusColor(task.status)}`}>
+                  {task.status.replace("-", " ").toUpperCase()}
                 </Badge>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button variant="ghost" className="h-8 w-8 p-0 opacity-60 group-hover:opacity-100 transition-opacity">
                       <span className="sr-only">Open menu</span>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
@@ -273,19 +272,19 @@ export default function TasksPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-4">
                 <div className="mb-4">
-                  <h3 className="font-semibold text-lg leading-none tracking-tight mb-2">{task.title}</h3>
+                  <h3 className="font-semibold text-base leading-snug text-foreground mb-2">{task.title}</h3>
                   <p className="text-sm text-muted-foreground line-clamp-2">{task.description}</p>
                 </div>
-                <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-4 border-t border-border/50">
-                  <div className="flex items-center gap-1">
-                    <CalendarIcon className="h-3 w-3" />
-                    {format(task.dueDate, "MMM d, yyyy")}
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-1.5">
+                    <CalendarIcon className="h-3.5 w-3.5" />
+                    {format(task.dueDate, "MMM d")}
                   </div>
-                  <div className={`flex items-center gap-1 font-medium ${getPriorityColor(task.priority)}`}>
+                  <div className={`flex items-center gap-1.5 font-semibold ${getPriorityColor(task.priority)}`}>
                     <div className="h-1.5 w-1.5 rounded-full bg-current" />
-                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
+                    {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                   </div>
                 </div>
               </CardContent>
