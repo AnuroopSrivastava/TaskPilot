@@ -77,7 +77,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false);
     toast({
       title: "Account created",
-      description: "Welcome to TaskFlow!",
+      description: "Welcome to TaskPilot!",
     });
     setLocation("/");
   };
